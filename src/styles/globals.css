@@ -1,0 +1,376 @@
+@import 'tailwindcss';
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PALM PARADISE — design tokens
+   Restraint is the whole point: obsidian, warm ivory, a little gold, stone,
+   deep green. Nothing else.
+   ══════════════════════════════════════════════════════════════════════════ */
+@theme {
+  /* Palette */
+  --color-obsidian: #0b0b0b;
+  --color-obsidian-soft: #121211;
+  --color-ivory: #f3efe7;
+  --color-gold: #bfa875;
+  --color-stone: #b7b1a6;
+  --color-forest: #18231c;
+
+  /* Type — loaded at runtime via <link> in app/layout, with a strong system
+     fallback so the build and first paint never depend on the network. */
+  --font-sans: 'Manrope', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Instrument Serif', ui-serif, Georgia, 'Times New Roman',
+    serif;
+
+  /* Breakpoints — design targets: 1440+ / 1280 / 1024 / 768 / 480 / 390 / 360 */
+  --breakpoint-xs: 30rem; /* 480  */
+  --breakpoint-sm: 40rem; /* 640  */
+  --breakpoint-md: 48rem; /* 768  */
+  --breakpoint-lg: 64rem; /* 1024 */
+  --breakpoint-xl: 80rem; /* 1280 */
+  --breakpoint-2xl: 90rem; /* 1440 */
+
+  /* Motion */
+  --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-editorial: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-swift: cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-scrollhint: scrollhint 2.4s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  --animate-pulse-ring: pulse-ring 2.8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.4);
+      opacity: 0.7;
+    }
+    70% {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }
+
+  @keyframes scrollhint {
+    0% {
+      transform: translateY(-110%);
+    }
+    55% {
+      transform: translateY(220%);
+    }
+    100% {
+      transform: translateY(220%);
+    }
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Base
+   ══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: color-mix(in oklab, var(--color-ivory) 12%, transparent);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Guard against any accidental horizontal scroll anywhere in the document. */
+    overflow-x: hidden;
+    scroll-behavior: auto;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html:focus-within {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    background-color: var(--color-obsidian);
+    color: var(--color-ivory);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Lock the document while the loader owns the viewport. */
+  body[data-scroll-locked='true'] {
+    overflow: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-gold) 85%, transparent);
+    color: var(--color-obsidian);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Hide the custom-cursor target only where a real pointer exists. */
+  @media (pointer: fine) {
+    body[data-cursor-active='true'] a,
+    body[data-cursor-active='true'] button,
+    body[data-cursor-active='true'] [role='button'] {
+      cursor: none;
+    }
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--color-stone) 40%, transparent) transparent;
+  }
+
+  /* WebKit */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--color-stone) 35%, transparent);
+    border-radius: 999px;
+  }
+
+  img,
+  video,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Lenis — smooth scroll
+   ══════════════════════════════════════════════════════════════════════════ */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Fluid type scale — every step is clamp(), so nothing overflows at 360px
+   ══════════════════════════════════════════════════════════════════════════ */
+@utility text-micro {
+  font-size: clamp(0.625rem, 0.6rem + 0.12vw, 0.6875rem);
+  line-height: 1.4;
+}
+
+@utility text-eyebrow {
+  font-size: clamp(0.6875rem, 0.65rem + 0.18vw, 0.8125rem);
+  line-height: 1.3;
+  letter-spacing: 0.24em;
+}
+
+@utility text-lede {
+  font-size: clamp(1rem, 0.92rem + 0.55vw, 1.375rem);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+@utility text-body-lg {
+  font-size: clamp(0.9375rem, 0.9rem + 0.35vw, 1.125rem);
+  line-height: 1.7;
+}
+
+@utility text-h3 {
+  font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+@utility text-h2 {
+  font-size: clamp(2rem, 1.4rem + 3vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+@utility text-h1 {
+  font-size: clamp(3rem, 1.2rem + 8.2vw, 10.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+}
+
+@utility text-metric {
+  font-size: clamp(2.25rem, 1.6rem + 3.2vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Components / helpers
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Small uppercase label used for section indices and nav. */
+.pp-label {
+  font-family: var(--font-sans);
+  font-size: clamp(0.625rem, 0.6rem + 0.12vw, 0.6875rem);
+  line-height: 1;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Hairline rule that fades at both ends. */
+.pp-rule {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--color-stone) 45%, transparent) 22%,
+    color-mix(in oklab, var(--color-stone) 45%, transparent) 78%,
+    transparent
+  );
+}
+
+/* Film grain laid over the cinematic sections. Pure CSS, no asset request. */
+.pp-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* Vignette for the cinematic hero. */
+.pp-vignette {
+  background: radial-gradient(
+    120% 90% at 50% 45%,
+    transparent 42%,
+    rgba(11, 11, 11, 0.42) 78%,
+    rgba(11, 11, 11, 0.86) 100%
+  );
+}
+
+/* Editorial image frame: keeps every placeholder at a predictable ratio so
+   nothing shifts while it streams in. */
+.pp-frame {
+  position: relative;
+  overflow: hidden;
+  background-color: color-mix(in oklab, var(--color-forest) 55%, var(--color-obsidian));
+}
+
+.pp-frame > img {
+  transition:
+    transform 1.4s var(--ease-lux),
+    filter 1.4s var(--ease-lux);
+  will-change: transform;
+}
+
+.group:hover .pp-frame > img,
+.pp-frame:hover > img {
+  transform: scale(1.03);
+}
+
+/* Underline sweep used on text links. */
+.pp-link {
+  position: relative;
+  display: inline-block;
+}
+.pp-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease-lux);
+}
+.pp-link:hover::after,
+.pp-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Line-mask reveal: each line sits in an overflow-hidden wrapper. */
+.pp-line {
+  display: block;
+  overflow: hidden;
+}
+.pp-line > span {
+  display: block;
+  will-change: transform;
+}
+
+/* Horizontal gallery rail — native scrolling, snap, no custom scroll library. */
+.pp-rail {
+  display: flex;
+  gap: clamp(1rem, 2vw, 2.5rem);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-inline: clamp(1.25rem, 5vw, 6rem);
+}
+.pp-rail::-webkit-scrollbar {
+  display: none;
+}
+.pp-rail > * {
+  scroll-snap-align: center;
+  flex: 0 0 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .pp-frame > img {
+    transition: none;
+  }
+
+  .group:hover .pp-frame > img,
+  .pp-frame:hover > img {
+    transform: none;
+  }
+}
