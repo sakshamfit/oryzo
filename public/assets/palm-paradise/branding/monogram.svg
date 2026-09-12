@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+  <rect x="1" y="1" width="38" height="38" stroke="#BFA875" stroke-width="1"/>
+  <path d="M20 10 C20 17 20 24 20 30" stroke="#BFA875" stroke-width="1.2"/>
+  <path d="M20 14 C15 12 11.5 12 9 14.5 M20 14 C25 12 28.5 12 31 14.5 M20 19 C15 17.5 12 17.5 9.5 20 M20 19 C25 17.5 28 17.5 30.5 20 M20 24 C16 23 13.5 23 11 24.5 M20 24 C24 23 26.5 23 29 24.5" stroke="#BFA875" stroke-width="1.1" stroke-linecap="round"/>
+</svg>
