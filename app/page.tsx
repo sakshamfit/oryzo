@@ -1,26 +1,48 @@
-'use client';
-import {useEffect,useRef,useState} from 'react';
-import gsap from 'gsap';
-import {ScrollTrigger} from 'gsap/ScrollTrigger';
-import Lenis from 'lenis';
+import Announcement from '@/components/hexcyra/Announcement';
+import Navbar from '@/components/hexcyra/Navbar';
+import Hero from '@/components/hexcyra/Hero';
+import Stats from '@/components/hexcyra/Stats';
+import Manifesto from '@/components/hexcyra/Manifesto';
+import Services from '@/components/hexcyra/Services';
+import Process from '@/components/hexcyra/Process';
+import Work from '@/components/hexcyra/Work';
+import Stack from '@/components/hexcyra/Stack';
+import Engagement from '@/components/hexcyra/Engagement';
+import Testimonials from '@/components/hexcyra/Testimonials';
+import Faq from '@/components/hexcyra/Faq';
+import Contact from '@/components/hexcyra/Contact';
+import Footer from '@/components/hexcyra/Footer';
+import ScrollFX from '@/components/hexcyra/ScrollFX';
 
-gsap.registerPlugin(ScrollTrigger);
-const A='https://www.sanmediasolutions.com/assets/img/';
-const images={founder:A+'founder.jpg?v=fcb83eae',snake:A+'snake/snakes.jpg?v=6508ec88',mountain:A+'growth/mountain.jpg?v=cec6e29e',team:A+'team.png?v=6c7029ae',office:A+'contact/office-space.jpg?v=d2b662b8'};
-const work=[['MODEL SHOOT','Fashion, on camera.','ig-DXRsTwoFakd.jpg?v=80567bfb'],['SPEAKING HEAD REEL EDITS','In their own words.','shrmei-testimonial.jpg?v=eb59f0ea'],['VIRAL / TRENDING CUT EDITS','Cut to the trend.','browhaus-before-after.jpg?v=dbed5796'],['VOICEOVER REELS','Told over the footage.','nivas-microblading.jpg?v=267d7d5c'],['CONCEPT REELS','One idea, one reel.','ig-DBfw1yVsoEs.jpg?v=8c2438a5'],['FOOD REELS','Shot close, cut to the beat.','ig-C_fzPtYyYDU.jpg?v=e79ce1a0'],['PRODUCT REELS','Every piece, in detail.','shukala-blouse-1.jpg?v=2ffc2b57'],['COURSE EDITS','Long-form, in widescreen.','browhaus-course.jpg?v=381b724f'],['GRAPHIC DESIGN','One poster from every set.','ig-C9fhLhjSI7n.jpg?v=2c23e0b6']];
-const services=['Social Media Marketing','Performance Marketing','Branding & Design','Video Production','Website Development','App Development','App & Product','Photoshoot & Production','Event Management','Social Media Handling','Business Growth Strategy'];
-const people=['Santhosh Sivashanmugam','Dr. M. Suruthi Keerthana','Bharath','Guru Gopalakrishnan','Karnan','Madhumitha'];
-function Magnetic({children,href='#contact'}:{children:React.ReactNode;href?:string}){const r=useRef<HTMLAnchorElement>(null);useEffect(()=>{const e=r.current;if(!e)return;const m=(x:MouseEvent)=>{const b=e.getBoundingClientRect();gsap.to(e,{x:(x.clientX-b.left-b.width/2)*.12,y:(x.clientY-b.top-b.height/2)*.12,duration:.35});};const l=()=>gsap.to(e,{x:0,y:0,duration:.5,ease:'elastic.out(1,.4)'});e.addEventListener('mousemove',m);e.addEventListener('mouseleave',l);return()=>{e.removeEventListener('mousemove',m);e.removeEventListener('mouseleave',l)}},[]);return <a ref={r} href={href} className="magnetic">{children}</a>}
-export default function Home(){const root=useRef<HTMLElement>(null);const [menu,setMenu]=useState(false);useEffect(()=>{const lenis=new Lenis({duration:1.15});let raf=0;const loop=(t:number)=>{lenis.raf(t);raf=requestAnimationFrame(loop)};raf=requestAnimationFrame(loop);const ctx=gsap.context(()=>{gsap.from('.hero-word',{yPercent:110,opacity:0,stagger:.08,duration:1.2,ease:'power4.out'});gsap.from('.hero-meta',{y:30,opacity:0,stagger:.06,duration:.8,delay:.5});gsap.to('.hero-media img',{yPercent:12,scale:1.08,scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}});gsap.utils.toArray<HTMLElement>('.reveal').forEach((e,i)=>gsap.from(e,{y:60,opacity:0,duration:.9,delay:i%3*.05,scrollTrigger:{trigger:e,start:'top 85%',once:true}}));gsap.utils.toArray<HTMLElement>('.service-row').forEach((e,i)=>gsap.from(e,{x:i%2?-50:50,opacity:0,duration:.7,scrollTrigger:{trigger:e,start:'top 92%',once:true}}));const snake=gsap.timeline({scrollTrigger:{trigger:'.snake',start:'top top',end:'+=180%',pin:true,scrub:1}});snake.to('.snake-art',{scale:1.35,rotate:-8,xPercent:-5}).to('.snake-copy',{yPercent:-25},'<').to('.snake-art',{scale:1.8,xPercent:10,rotate:8}).to('.snake-copy',{yPercent:-52},'<').to('.snake-art',{scale:2.25,xPercent:-8,rotate:-4}).to('.snake-copy',{yPercent:-82},'<');gsap.to('.approach-image img',{yPercent:-12,scale:1.1,scrollTrigger:{trigger:'.approach',start:'top bottom',end:'bottom top',scrub:1}});const track=document.querySelector('.work-track') as HTMLElement;gsap.to(track,{x:()=>-(track.scrollWidth-innerWidth+innerWidth*.08),ease:'none',scrollTrigger:{trigger:'.work-pin',start:'top top',end:()=>'+='+(track.scrollWidth-innerWidth+innerWidth*.45),pin:true,scrub:1,invalidateOnRefresh:true}});gsap.utils.toArray<HTMLElement>('.work-card img').forEach(e=>gsap.to(e,{scale:1.1,scrollTrigger:{trigger:e,start:'top bottom',end:'bottom top',scrub:1}}));gsap.from('.team-card',{y:60,opacity:0,stagger:.08,duration:.8,scrollTrigger:{trigger:'.team-grid',start:'top 82%'}});},root);return()=>{cancelAnimationFrame(raf);ctx.revert();lenis.destroy()}},[]);
-return <main ref={root} id="top"><header className="nav"><a href="#top" className="brand"><b>SAN<span>.</span></b><small>MEDIA SOLUTION</small></a><nav>{['About','Services','Work','Team','Contact'].map(x=><a key={x} href={'#'+x.toLowerCase()}>{x}</a>)}</nav><Magnetic>START A PROJECT ↗</Magnetic><button className="menu" onClick={()=>setMenu(!menu)}>{menu?'CLOSE':'MENU'}</button></header>{menu&&<div className="mobile-menu">{['About','Services','Work','Team','Contact'].map(x=><a key={x} href={'#'+x.toLowerCase()} onClick={()=>setMenu(false)}>{x}</a>)}</div>}
-<section className="hero"><div className="hero-grid"/><div className="hero-media"><img src={images.snake} alt="SAN Media visual" fetchPriority="high"/></div><div className="hero-inner"><p className="eyebrow hero-meta">AI SNAKE MARKETING AGENCY · COIMBATORE</p><h1><span className="hero-word">BRANDS</span><span className="hero-word">TODAY.</span><span className="hero-word accent">BIGGER</span><span className="hero-word">TOMORROWS.</span></h1><p className="hero-lead hero-meta">Strategy. Content. Technology. Performance.<br/>All under one roof.</p><div className="hero-bottom hero-meta"><span>75+ BUSINESSES SERVED</span><span>2Cr+ REVENUE GENERATED</span><span>5X AVERAGE GROWTH</span><span>100% COMMITMENT</span></div></div></section>
-<section className="stats"><div><b>75+</b><small>BUSINESSES SERVED</small></div><div><b>2Cr+</b><small>REVENUE GENERATED</small></div><div><b>5X</b><small>AVERAGE GROWTH</small></div><div><b>100%</b><small>COMMITMENT TO RESULTS</small></div></section>
-<section className="about" id="about"><div className="section-kicker reveal">01 / ABOUT</div><div className="about-grid"><div className="portrait reveal"><img src={images.founder} alt="Santhosh Sivashanmugam, Founder" loading="lazy"/></div><div className="about-copy reveal"><p className="eyebrow">THE PERSON BEHIND THE MOTION</p><h2>Built to make brands <span>impossible to ignore.</span></h2><p>We combine strategy, content, technology and performance to build brands that move faster and grow stronger. No disconnected vendors. One focused team.</p><p className="founder-name">SANTHOSH SIVASHANMUGAM<br/><small>FOUNDER · CREATIVE DIRECTOR</small></p><Magnetic>MEET THE TEAM ↗</Magnetic></div></div></section>
-<section className="services" id="services"><div className="section-kicker reveal">02 / SERVICES</div><div className="services-head"><h2 className="reveal">ONE ROOF.<br/><span>EVERY MOVE.</span></h2><p className="reveal">From first strategy to final conversion, every discipline works together.</p></div><div className="service-list">{services.map((s,i)=><div className="service-row" key={s}><span>0{i+1}</span><h3>{s}</h3><p>Strategy · Creation · Distribution · Performance</p><b>↗</b></div>)}</div></section>
-<section className="snake"><div className="snake-art"><img src={images.snake} alt="AI Snake Marketing" loading="lazy"/></div><div className="snake-copy"><p className="eyebrow">03 / SIGNATURE SYSTEM</p><h2>AI<br/><span>SNAKE</span><br/>MARKETING™</h2><div className="snake-levels"><article><small>01</small><b>NON-VENOMOUS</b><p>Build the foundation.</p></article><article><small>02</small><b>VENOMOUS SNAKE</b><p>Strike with performance.</p></article><article><small>03</small><b>KING COBRA</b><p>Dominate the category.</p></article></div></div></section>
-<section className="approach" id="approach"><div className="section-kicker reveal">04 / APPROACH</div><div className="approach-top"><div className="approach-image"><img src={images.mountain} alt="Growth strategy" loading="lazy"/></div><div><h2 className="reveal">STRATEGY →<br/>CONTENT →<br/><span>GROWTH.</span></h2><p className="reveal">A connected system designed to turn attention into measurable business outcomes.</p></div></div><div className="steps">{['Strategy','Content','Distribution','Performance','Conversion','Growth'].map((s,i)=><div className="step" key={s}><small>0{i+1}</small><b>{s}</b></div>)}</div></section>
-<section className="work-pin" id="work"><div className="work-head"><div><div className="section-kicker">05 / SELECTED WORK</div><h2>WORK THAT<br/><span>MOVES.</span></h2></div><p>Scroll to explore selected formats and campaigns.</p></div><div className="work-track">{work.map((w,i)=><article className="work-card" key={w[0]}><div className="work-image"><img src={A+'portfolio/'+w[2]} alt={w[0]} loading="lazy"/><span>0{i+1}</span></div><small>{w[0]}</small><h3>{w[1]}</h3><p>{w[2].split('.')[0]}</p><b>VIEW PROJECT ↗</b></article>)}</div></section>
-<section className="clients"><div className="section-kicker">06 / CLIENTS</div><h2 className="reveal">BUILT WITH<br/><span>GOOD PEOPLE.</span></h2><div className="marquee"><div>2FOLD · BROWHAUS · DR. SHRMEI · FEATHERS · INANYA’S · MODE CLOTHING · RADIANCE · RHYTHM ACADEMY · RK PETS POLYCLINIC · SHUKALA · VIYA HAIRLOFT · </div><div>2FOLD · BROWHAUS · DR. SHRMEI · FEATHERS · INANYA’S · MODE CLOTHING · RADIANCE · RHYTHM ACADEMY · RK PETS POLYCLINIC · SHUKALA · VIYA HAIRLOFT · </div></div></section>
-<section className="team" id="team"><div className="section-kicker">07 / TEAM</div><h2 className="reveal">THE PEOPLE<br/><span>BEHIND IT.</span></h2><div className="team-grid">{people.map((p,i)=><article className="team-card" key={p}><div className="person"><img src={i===0?images.founder:images.team} alt={p} loading="lazy"/><span>0{i+1}</span></div><h3>{p}</h3><small>{['Founder / Creative','Managing Director','Creative / Production','Ads Expert','Senior Video Editor','Social Media Manager'][i]}</small></article>)}</div></section>
-<section className="contact" id="contact"><div className="contact-bg"><img src={images.office} alt="SAN Media office" loading="lazy"/></div><div className="contact-content"><div className="section-kicker">08 / CONTACT</div><h2 className="reveal">LET’S BUILD<br/><span>WHAT’S NEXT.</span></h2><p className="reveal">Have a brand, launch, campaign or growth problem? Tell us what you’re building.</p><div className="contact-grid"><form><input placeholder="Your name"/><input placeholder="Email / Phone"/><input placeholder="Company"/><input placeholder="Project type"/><textarea placeholder="Tell us about the project"/><button>START THE CONVERSATION ↗</button></form><div className="details"><small>REACH US</small><h3>sanmediasolution@gmail.com</h3><p>+91 93605 51741</p><p>51/3 Vallalar Nagar, Villankurichi,<br/>Coimbatore — 641035</p><p>MON — SAT · 10AM — 7PM IST</p></div></div></div></section>
-<footer><span>SAN MEDIA SOLUTION<span className="accent">.</span></span><small>AI SNAKE MARKETING™ · © 2026</small><a href="#top">BACK TO TOP ↑</a></footer></main>}
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEXCYRA — single-page landing for a full-service software atelier.
+
+   Chapters: announcement · nav · hero · proof · 01 atelier · 02 services ·
+   03 process · 04 work · stack · 05 engagement · 06 client words · 07 faq ·
+   08 contact · footer — with the ScrollFX system wiring Lenis, reveals,
+   parallax and the reading progress.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+export default function Home() {
+  return (
+    <>
+      <ScrollFX />
+      <Announcement />
+      <Navbar />
+      <main>
+        <Hero />
+        <Stats />
+        <Manifesto />
+        <Services />
+        <Process />
+        <Work />
+        <Stack />
+        <Engagement />
+        <Testimonials />
+        <Faq />
+        <Contact />
+      </main>
+      <Footer />
+    </>
+  );
+}

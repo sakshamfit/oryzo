@@ -1,17 +1,22 @@
-# Palm Paradise — Elevated Living
+# Hexcyra — Software, cut to measure.
 
-> An architectural film that happens to be a website.
+> A single-page landing for a full-service software atelier: web platforms,
+> mobile apps, SaaS products, custom software, cloud, AI and everything else
+> in the IT sector — presented like couture, engineered like infrastructure.
 
-Palm Paradise is a cinematic single-page experience for a premium residential
-development. The hero is a **30-frame, scroll-scrubbed architectural sequence**
-rendered to a DPR-aware `<canvas>` — the scroll position drives the camera from a
-distant approach, through the landscaping and façade, to a final aerial reveal.
-Everything else (vision, residences, architecture, amenities, lifestyle, location,
-gallery, investment, contact) is composed as quiet, editorial chapters around that
-film.
+Built with **Next.js 15 (App Router) · React 19 · TypeScript (strict) ·
+Lenis · Lucide**.
 
-Built with **Next.js (App Router) · React 19 · TypeScript (strict) · Tailwind CSS v4 ·
-GSAP + ScrollTrigger · Lenis · Three.js (@react-three/fiber) · Lucide**.
+The design merges two in-house systems:
+
+- **Saree Ghar** — the couture design language: cream / ivory / terracotta /
+  maroon palette, gold hairlines, Cormorant Garamond + Jost + Great Vibes
+  typography, overlines with fading rules, script signatures, corner arcs.
+- **Trendy Attire** — the responsive system: fluid `clamp()` tokens
+  (`--gut`, `--pad-y`, `--nav-h`), the 44px-minimum touch-friendly button
+  system, `.rv` scroll reveals driven by one rAF loop, sticky nav with
+  hamburger drawer ≤ 900px, reading progress, marquee bands, and
+  320 → 1440 responsiveness with `prefers-reduced-motion` respect.
 
 ---
 
@@ -29,125 +34,50 @@ npm run build
 npm run start
 ```
 
-Quality gates (what CI should run):
+Quality gates:
 
 ```bash
 npm run typecheck  # tsc --noEmit (strict)
-npm run lint       # ESLint (next/core-web-vitals + next/typescript)
 npm run build      # production build
 ```
 
 ---
 
-## The frame-sequence workflow (read this first)
-
-The hero never hardcodes external URLs. It reads a **central config** and a **fixed
-folder of 30 JPGs** that you simply overwrite.
-
-### 1. Ship the real footage
-
-1. Generate / film your Palm Paradise video.
-2. Split it into 30 stills (EZGIF, ffmpeg, Premiere…).
-3. Name them, in order: `frame-001.jpg` … `frame-030.jpg`.
-4. Drop them into `public/assets/palm-paradise/sequence/`, overwriting the placeholders.
-5. Done — the site uses them on the next load. **No code changes.**
-
-Optional portrait set for phones: put the same 30 names in
-`public/assets/palm-paradise/mobile/`. The player probes `frame-001` at runtime and
-uses the portrait set when present; delete the folder to fall back to landscape.
-
-If your film has a different frame count, change `totalFrames` in
-`src/config/palmSequence.ts` — nothing else hardcodes 30.
-
-### 2. Placeholder art
-
-The files currently in `public/assets/palm-paradise/**` are **generated placeholder
-art** (abstract composition studies, not AI renders). Regenerate or tweak them with:
-
-```bash
-npm run assets:generate
-```
-
-See `scripts/generate-placeholders.mjs`. Safe to delete once real photography lands.
-
-### 3. Where everything is configured
+## Where everything lives
 
 | File | Purpose |
 | ---- | ------- |
-| `src/config/palmSequence.ts` | frame paths, count, DPR cap, focal points, scroll length, damping, debug flag |
-| `src/config/projectData.ts` | every fact, figure, and asset path (all marked `PLACEHOLDER`) |
-| `src/config/navigation.ts` | nav links + the 01–10 section index |
+| `src/config/site.ts` | **all content** — services, process, work, engagement models, FAQ, contact details. Edit this file; components only compose it. |
+| `app/globals.css` | the design system — tokens, button/touch system, nav + drawer, section styles, motion safety |
+| `app/page.tsx` | chapter order of the landing page |
+| `src/components/hexcyra/*` | one component per chapter (Announcement, Navbar, Hero, Stats, Manifesto, Services, Process, Work, Stack, Engagement, Testimonials, Faq, Contact, Footer) |
+| `src/components/hexcyra/ScrollFX.tsx` | Lenis + single rAF loop + `.rv` reveals + `data-speed` parallax + reading progress + smooth anchors |
+| `public/assets/hexcyra/*` | brand imagery (AI-generated placeholder art — replace with real work photography as it lands) |
 
-Components never build image URLs themselves — they read `ASSETS` from
-`projectData.ts`.
+### Chapters
 
----
+`announcement · nav · hero · proof · 01 atelier · 02 services (12 disciplines) ·
+03 process · 04 work · stack marquee · 05 engagement · 06 client words ·
+07 faq · 08 contact · footer`
 
-## Debug overlay
+### The motion system
 
-Set in `.env.local` (see `.env.example`):
+One `requestAnimationFrame` loop drives Lenis smooth scrolling, the nav
+progress bar and `[data-speed]` parallax; an IntersectionObserver flips `.rv`
+elements to `.in`; a `body.live` class triggers the staggered hero entrance
+(pure CSS transitions). `prefers-reduced-motion` gets a quiet, complete page.
 
-```
-NEXT_PUBLIC_SEQUENCE_DEBUG=true
-```
+### Buttons & touch
 
-Shows a corner readout (`FRAME 17 / 30 · PROGRESS 56% · decoded n/30`). When `false`
-(the default) the component is never mounted.
-
----
-
-## Architecture notes
-
-- **Scroll → ref → rAF, never React.** `ScrollTrigger.onUpdate` writes one number to a
-  ref; a `requestAnimationFrame` loop in `SequenceCanvas` damps and blends frames onto
-  the canvas. No `setState` per frame, no 30×/s renders.
-- **Continuity in three layers:** GSAP `scrub` (chases the scrollbar), frame-rate
-  independent damping (flicks glide), and fractional cross-dissolve (30 stills read as
-  one camera move).
-- **Memory-safe preloading:** frames decode via `createImageBitmap` and are downscaled
-  to `maxTextureWidth` (1920 desktop / 900 mobile) so 30 frames don't eat GPU memory.
-  Missing frames blend to their nearest neighbour; a fully missing set renders a
-  procedural fallback scene instead of a black hero.
-- **Reduced motion:** the scrub is replaced by a single static frame, Lenis is never
-  instantiated, and reveals resolve instantly.
-- **Performance:** Three.js is code-split and only mounts in the CTA; non-critical
-  images are lazy; the first frames are `<link rel="preload">`ed; the render loop
-  pauses on hidden tabs; the canvas caps its backing store at 2600px.
-
-### Structure
-
-```
-src/
-  app/            layout (fonts, SEO, providers) + page
-  components/
-    cinematic/    CinematicSequence · SequenceCanvas · SequenceLoader · SequenceDebug
-    navigation/   Header · MobileMenu
-    hero/         Hero
-    sections/     Vision · Architecture · Residences · Amenities · Lifestyle · Investment · CallToAction
-    gallery/      Gallery · Lightbox
-    location/     LocationSection
-    footer/       Footer
-    three/        Atmosphere (R3F particle depth)
-    ui/           Button · Magnetic · Reveal · SectionHeading · ImageFrame · CustomCursor · ScrollProgress · SmoothScroll
-  config/         palmSequence · projectData · navigation
-  hooks/          useImageSequence · useLenis · useMediaQuery · useReducedMotion
-  lib/            gsap · utils · types
-  styles/         globals.css (design tokens, fluid type scale)
-scripts/          generate-placeholders.mjs
-public/assets/    palm-paradise/** (replaceable placeholder art)
-```
+Every interactive target meets the 44px minimum, scales with `clamp()`,
+stacks full-width ≤ 640px, and gives tactile `:active` feedback —
+`.btn` (+ `--ghost --sm --lg --block`), `.tlink`, `.burger`, budget bands,
+FAQ rows.
 
 ---
 
-## Accessibility & responsiveness
+## Deploying
 
-Semantic landmarks, skip-link, visible focus states, ARIA labels, keyboard gallery
-navigation (←/→/Esc), and a screen-reader account of the hero film. Fluid `clamp()`
-type from 360px to 1440p+, no horizontal overflow, and `prefers-reduced-motion`
-support throughout.
-
-## Disclaimer
-
-All figures (areas, counts, dates, contacts) are **placeholders** for design
-development, flagged `PLACEHOLDER` in `src/config/projectData.ts`. Replace them with
-approved project data before publication.
+Any Node host or static export target works. `npm run build && npm run start`
+is the production path. The contact form composes a pre-filled email
+(`mailto:`) so the page needs no backend to take briefs.
