@@ -1,45 +1,29 @@
-import Announcement from '@/components/hexcyra/Announcement';
-import Navbar from '@/components/hexcyra/Navbar';
-import Hero from '@/components/hexcyra/Hero';
-import Stats from '@/components/hexcyra/Stats';
-import Manifesto from '@/components/hexcyra/Manifesto';
-import Services from '@/components/hexcyra/Services';
-import Process from '@/components/hexcyra/Process';
-import Work from '@/components/hexcyra/Work';
-import Stack from '@/components/hexcyra/Stack';
-import Engagement from '@/components/hexcyra/Engagement';
-import Testimonials from '@/components/hexcyra/Testimonials';
-import Faq from '@/components/hexcyra/Faq';
-import Contact from '@/components/hexcyra/Contact';
-import Footer from '@/components/hexcyra/Footer';
-import ScrollFX from '@/components/hexcyra/ScrollFX';
+import Nav from '@/components/a3/Nav';
+import Hero from '@/components/a3/Hero';
+import Philosophy from '@/components/a3/Philosophy';
+import Projects from '@/components/a3/Projects';
+import Highlights from '@/components/a3/Highlights';
+import Gallery from '@/components/a3/Gallery';
+import Contact from '@/components/a3/Contact';
+import Footer from '@/components/a3/Footer';
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   HEXCYRA — single-page landing for a full-service software atelier.
-
-   Chapters: announcement · nav · hero · proof · 01 atelier · 02 services ·
-   03 process · 04 work · stack · 05 engagement · 06 client words · 07 faq ·
-   08 contact · footer — with the ScrollFX system wiring Lenis, reveals,
-   parallax and the reading progress.
+   A3 INTERIOR DESIGNER & BUILDER — single-page landing.
+   Chapters: nav (blend-difference) · hero · philosophy (sticky metrics) ·
+   featured projects · highlights (dark) · gallery mosaic · contact · footer.
+   Native scrolling only — html has .scroll-smooth, no scroll library.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 export default function Home() {
   return (
     <>
-      <ScrollFX />
-      <Announcement />
-      <Navbar />
+      <Nav />
       <main>
         <Hero />
-        <Stats />
-        <Manifesto />
-        <Services />
-        <Process />
-        <Work />
-        <Stack />
-        <Engagement />
-        <Testimonials />
-        <Faq />
+        <Philosophy />
+        <Projects />
+        <Highlights />
+        <Gallery />
         <Contact />
       </main>
       <Footer />
